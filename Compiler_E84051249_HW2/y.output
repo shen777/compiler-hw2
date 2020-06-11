@@ -1,0 +1,2729 @@
+State 16 conflicts: 2 shift/reduce
+State 17 conflicts: 2 shift/reduce
+State 111 conflicts: 12 reduce/reduce
+State 123 conflicts: 1 shift/reduce, 2 reduce/reduce
+State 149 conflicts: 1 shift/reduce, 2 reduce/reduce
+State 150 conflicts: 1 shift/reduce, 2 reduce/reduce
+State 156 conflicts: 1 reduce/reduce
+
+
+Grammar
+
+    0 $accept: Program $end
+
+    1 Program: Stmt Stmts
+
+    2 Stmts: Stmt Stmts
+    3      | %empty
+
+    4 Stmt: declarestmt NEWLINE
+    5     | blockstmt NEWLINE
+    6     | ifstmt NEWLINE
+    7     | forstmt NEWLINE
+    8     | printstmt NEWLINE
+    9     | assignmentstmt NEWLINE
+   10     | expression NEWLINE
+   11     | indecstmt NEWLINE
+   12     | NEWLINE
+
+   13 indecstmt: ID INC
+   14          | ID DEC
+
+   15 declarestmt: VAR ID DCLTYPE EXTENBDASSIGNMENT
+
+   16 DCLTYPE: INT
+   17        | FLOAT
+   18        | STRING
+   19        | BOOL
+
+   20 $@1: %empty
+
+   21 DCLTYPE: '[' INT_LIT $@1 ']' DCLTYPE
+
+   22 EXTENBDASSIGNMENT: '=' ID
+   23                  | '=' expression
+   24                  | %empty
+
+   25 $@2: %empty
+
+   26 expression: expression $@2 LOR llpexpression
+   27           | llpexpression
+   28           | '"' STRING_LIT '"'
+
+   29 $@3: %empty
+
+   30 hpexpression: hpexpression $@3 '*' hpexpression
+   31             | hpexpression '/' hpexpression
+
+   32 $@4: %empty
+
+   33 hpexpression: hpexpression $@4 '%' hpexpression
+   34             | unaryExpr
+
+   35 $@5: %empty
+
+   36 mpexpression: mpexpression $@5 '+' hpexpression
+
+   37 $@6: %empty
+
+   38 mpexpression: mpexpression $@6 '-' hpexpression
+   39             | hpexpression
+
+   40 lpexpression: lpexpression EQL mpexpression
+   41             | lpexpression NEQ mpexpression
+   42             | lpexpression LEQ mpexpression
+   43             | lpexpression GEQ mpexpression
+   44             | lpexpression '<' mpexpression
+   45             | lpexpression '>' mpexpression
+   46             | mpexpression
+
+   47 $@7: %empty
+
+   48 llpexpression: llpexpression $@7 LAND lpexpression
+   49              | lpexpression
+
+   50 unaryExpr: primaryExpr
+   51          | unaryOp unaryExpr
+   52          | '!' unaryExpr
+
+   53 unaryOp: '+'
+   54        | '-'
+
+   55 primaryExpr: literal
+   56            | ID
+   57            | '(' expression ')'
+
+   58 $@8: %empty
+
+   59 primaryExpr: primaryExpr '[' $@8 expression ']'
+   60            | INT '(' llpexpression ')'
+   61            | FLOAT '(' llpexpression ')'
+
+   62 literal: signLiteral
+   63        | INT_LIT
+   64        | FLOAT_LIT
+   65        | BOOL_LIT
+   66        | '"' STRING_LIT '"'
+   67        | TRUE
+   68        | FALSE
+
+   69 signLiteral: '+' INT_LIT
+   70            | '-' INT_LIT
+   71            | '+' FLOAT_LIT
+   72            | '-' FLOAT_LIT
+
+   73 $@9: %empty
+
+   74 assignmentstmt: expression $@9 ADD_ASSIGN expression
+   75               | expression SUB_ASSIGN expression
+   76               | expression MUL_ASSIGN expression
+   77               | expression QUO_ASSIGN expression
+   78               | expression REM_ASSIGN expression
+
+   79 $@10: %empty
+
+   80 assignmentstmt: expression $@10 '=' expression
+
+   81 $@11: %empty
+
+   82 blockstmt: '{' NEWLINE $@11 Stmts '}'
+
+   83 $@12: %empty
+
+   84 ifstmt: IF condition $@12 blockstmt elsestmt
+
+   85 condition: expression
+
+   86 elsestmt: ELSE ifstmt
+   87         | ELSE blockstmt
+   88         | %empty
+
+   89 $@13: %empty
+
+   90 forstmt: FOR condition $@13 blockstmt
+   91        | FOR forclause blockstmt
+
+   92 forclause: initstmt ';' condition ';' poststmt
+
+   93 initstmt: assignmentstmt
+   94         | expression
+   95         | indecstmt
+
+   96 poststmt: assignmentstmt
+   97         | expression
+   98         | indecstmt
+
+   99 $@14: %empty
+
+  100 printstmt: PRINT $@14 expression
+
+  101 $@15: %empty
+
+  102 printstmt: PRINTLN $@15 expression
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'!' (33) 52
+'"' (34) 28 66
+'%' (37) 33
+'(' (40) 57 60 61
+')' (41) 57 60 61
+'*' (42) 30
+'+' (43) 36 53 69 71
+'-' (45) 38 54 70 72
+'/' (47) 31
+';' (59) 92
+'<' (60) 44
+'=' (61) 22 23 80
+'>' (62) 45
+'[' (91) 21 59
+']' (93) 21 59
+'{' (123) 82
+'}' (125) 82
+error (256)
+VAR (258) 15
+INT (259) 16 60
+FLOAT (260) 17 61
+BOOL (261) 19
+STRING (262) 18
+ADD_ASSIGN (263) 74
+SUB_ASSIGN (264) 75
+MUL_ASSIGN (265) 76
+QUO_ASSIGN (266) 77
+REM_ASSIGN (267) 78
+ELSE (268) 86 87
+FOR (269) 90 91
+EQL (270) 40
+GEQ (271) 43
+IF (272) 84
+LAND (273) 48
+LEQ (274) 42
+LOR (275) 26
+NEQ (276) 41
+PRINT (277) 100
+PRINTLN (278) 102
+NEWLINE (279) 4 5 6 7 8 9 10 11 12 82
+INC (280) 13
+DEC (281) 14
+TRUE (282) 67
+FALSE (283) 68
+INT_LIT (284) 21 63 69 70
+FLOAT_LIT (285) 64 71 72
+STRING_LIT (286) 28 66
+BOOL_LIT (287) 65
+ID (288) 13 14 15 22 56
+
+
+Nonterminals, with rules where they appear
+
+$accept (51)
+    on left: 0
+Program (52)
+    on left: 1, on right: 0
+Stmts (53)
+    on left: 2 3, on right: 1 2 82
+Stmt (54)
+    on left: 4 5 6 7 8 9 10 11 12, on right: 1 2
+indecstmt (55)
+    on left: 13 14, on right: 11 95 98
+declarestmt (56)
+    on left: 15, on right: 4
+DCLTYPE (57)
+    on left: 16 17 18 19 21, on right: 15 21
+$@1 (58)
+    on left: 20, on right: 21
+EXTENBDASSIGNMENT (59)
+    on left: 22 23 24, on right: 15
+expression (60)
+    on left: 26 27 28, on right: 10 23 26 57 59 74 75 76 77 78 80 85
+    94 97 100 102
+$@2 (61)
+    on left: 25, on right: 26
+hpexpression (62)
+    on left: 30 31 33 34, on right: 30 31 33 36 38 39
+$@3 (63)
+    on left: 29, on right: 30
+$@4 (64)
+    on left: 32, on right: 33
+mpexpression (65)
+    on left: 36 38 39, on right: 36 38 40 41 42 43 44 45 46
+$@5 (66)
+    on left: 35, on right: 36
+$@6 (67)
+    on left: 37, on right: 38
+lpexpression (68)
+    on left: 40 41 42 43 44 45 46, on right: 40 41 42 43 44 45 48 49
+llpexpression (69)
+    on left: 48 49, on right: 26 27 48 60 61
+$@7 (70)
+    on left: 47, on right: 48
+unaryExpr (71)
+    on left: 50 51 52, on right: 34 51 52
+unaryOp (72)
+    on left: 53 54, on right: 51
+primaryExpr (73)
+    on left: 55 56 57 59 60 61, on right: 50 59
+$@8 (74)
+    on left: 58, on right: 59
+literal (75)
+    on left: 62 63 64 65 66 67 68, on right: 55
+signLiteral (76)
+    on left: 69 70 71 72, on right: 62
+assignmentstmt (77)
+    on left: 74 75 76 77 78 80, on right: 9 93 96
+$@9 (78)
+    on left: 73, on right: 74
+$@10 (79)
+    on left: 79, on right: 80
+blockstmt (80)
+    on left: 82, on right: 5 84 87 90 91
+$@11 (81)
+    on left: 81, on right: 82
+ifstmt (82)
+    on left: 84, on right: 6 86
+$@12 (83)
+    on left: 83, on right: 84
+condition (84)
+    on left: 85, on right: 84 90 92
+elsestmt (85)
+    on left: 86 87 88, on right: 84
+forstmt (86)
+    on left: 90 91, on right: 7
+$@13 (87)
+    on left: 89, on right: 90
+forclause (88)
+    on left: 92, on right: 91
+initstmt (89)
+    on left: 93 94 95, on right: 92
+poststmt (90)
+    on left: 96 97 98, on right: 92
+printstmt (91)
+    on left: 100 102, on right: 8
+$@14 (92)
+    on left: 99, on right: 100
+$@15 (93)
+    on left: 101, on right: 102
+
+
+State 0
+
+    0 $accept: . Program $end
+
+    VAR        shift, and go to state 1
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    FOR        shift, and go to state 4
+    IF         shift, and go to state 5
+    PRINT      shift, and go to state 6
+    PRINTLN    shift, and go to state 7
+    NEWLINE    shift, and go to state 8
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 14
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+    '{'        shift, and go to state 20
+
+    Program         go to state 21
+    Stmt            go to state 22
+    indecstmt       go to state 23
+    declarestmt     go to state 24
+    expression      go to state 25
+    hpexpression    go to state 26
+    mpexpression    go to state 27
+    lpexpression    go to state 28
+    llpexpression   go to state 29
+    unaryExpr       go to state 30
+    unaryOp         go to state 31
+    primaryExpr     go to state 32
+    literal         go to state 33
+    signLiteral     go to state 34
+    assignmentstmt  go to state 35
+    blockstmt       go to state 36
+    ifstmt          go to state 37
+    forstmt         go to state 38
+    printstmt       go to state 39
+
+
+State 1
+
+   15 declarestmt: VAR . ID DCLTYPE EXTENBDASSIGNMENT
+
+    ID  shift, and go to state 40
+
+
+State 2
+
+   60 primaryExpr: INT . '(' llpexpression ')'
+
+    '('  shift, and go to state 41
+
+
+State 3
+
+   61 primaryExpr: FLOAT . '(' llpexpression ')'
+
+    '('  shift, and go to state 42
+
+
+State 4
+
+   90 forstmt: FOR . condition $@13 blockstmt
+   91        | FOR . forclause blockstmt
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 14
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    indecstmt       go to state 43
+    expression      go to state 44
+    hpexpression    go to state 26
+    mpexpression    go to state 27
+    lpexpression    go to state 28
+    llpexpression   go to state 29
+    unaryExpr       go to state 30
+    unaryOp         go to state 31
+    primaryExpr     go to state 32
+    literal         go to state 33
+    signLiteral     go to state 34
+    assignmentstmt  go to state 45
+    condition       go to state 46
+    forclause       go to state 47
+    initstmt        go to state 48
+
+
+State 5
+
+   84 ifstmt: IF . condition $@12 blockstmt elsestmt
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 50
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+    condition      go to state 51
+
+
+State 6
+
+  100 printstmt: PRINT . $@14 expression
+
+    $default  reduce using rule 99 ($@14)
+
+    $@14  go to state 52
+
+
+State 7
+
+  102 printstmt: PRINTLN . $@15 expression
+
+    $default  reduce using rule 101 ($@15)
+
+    $@15  go to state 53
+
+
+State 8
+
+   12 Stmt: NEWLINE .
+
+    $default  reduce using rule 12 (Stmt)
+
+
+State 9
+
+   67 literal: TRUE .
+
+    $default  reduce using rule 67 (literal)
+
+
+State 10
+
+   68 literal: FALSE .
+
+    $default  reduce using rule 68 (literal)
+
+
+State 11
+
+   63 literal: INT_LIT .
+
+    $default  reduce using rule 63 (literal)
+
+
+State 12
+
+   64 literal: FLOAT_LIT .
+
+    $default  reduce using rule 64 (literal)
+
+
+State 13
+
+   65 literal: BOOL_LIT .
+
+    $default  reduce using rule 65 (literal)
+
+
+State 14
+
+   13 indecstmt: ID . INC
+   14          | ID . DEC
+   56 primaryExpr: ID .
+
+    INC  shift, and go to state 54
+    DEC  shift, and go to state 55
+
+    $default  reduce using rule 56 (primaryExpr)
+
+
+State 15
+
+   28 expression: '"' . STRING_LIT '"'
+   66 literal: '"' . STRING_LIT '"'
+
+    STRING_LIT  shift, and go to state 56
+
+
+State 16
+
+   53 unaryOp: '+' .
+   69 signLiteral: '+' . INT_LIT
+   71            | '+' . FLOAT_LIT
+
+    INT_LIT    shift, and go to state 57
+    FLOAT_LIT  shift, and go to state 58
+
+    INT_LIT    [reduce using rule 53 (unaryOp)]
+    FLOAT_LIT  [reduce using rule 53 (unaryOp)]
+    $default   reduce using rule 53 (unaryOp)
+
+
+State 17
+
+   54 unaryOp: '-' .
+   70 signLiteral: '-' . INT_LIT
+   72            | '-' . FLOAT_LIT
+
+    INT_LIT    shift, and go to state 59
+    FLOAT_LIT  shift, and go to state 60
+
+    INT_LIT    [reduce using rule 54 (unaryOp)]
+    FLOAT_LIT  [reduce using rule 54 (unaryOp)]
+    $default   reduce using rule 54 (unaryOp)
+
+
+State 18
+
+   52 unaryExpr: '!' . unaryExpr
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    unaryExpr    go to state 62
+    unaryOp      go to state 31
+    primaryExpr  go to state 32
+    literal      go to state 33
+    signLiteral  go to state 34
+
+
+State 19
+
+   57 primaryExpr: '(' . expression ')'
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 63
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 20
+
+   82 blockstmt: '{' . NEWLINE $@11 Stmts '}'
+
+    NEWLINE  shift, and go to state 64
+
+
+State 21
+
+    0 $accept: Program . $end
+
+    $end  shift, and go to state 65
+
+
+State 22
+
+    1 Program: Stmt . Stmts
+
+    VAR        shift, and go to state 1
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    FOR        shift, and go to state 4
+    IF         shift, and go to state 5
+    PRINT      shift, and go to state 6
+    PRINTLN    shift, and go to state 7
+    NEWLINE    shift, and go to state 8
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 14
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+    '{'        shift, and go to state 20
+
+    $default  reduce using rule 3 (Stmts)
+
+    Stmts           go to state 66
+    Stmt            go to state 67
+    indecstmt       go to state 23
+    declarestmt     go to state 24
+    expression      go to state 25
+    hpexpression    go to state 26
+    mpexpression    go to state 27
+    lpexpression    go to state 28
+    llpexpression   go to state 29
+    unaryExpr       go to state 30
+    unaryOp         go to state 31
+    primaryExpr     go to state 32
+    literal         go to state 33
+    signLiteral     go to state 34
+    assignmentstmt  go to state 35
+    blockstmt       go to state 36
+    ifstmt          go to state 37
+    forstmt         go to state 38
+    printstmt       go to state 39
+
+
+State 23
+
+   11 Stmt: indecstmt . NEWLINE
+
+    NEWLINE  shift, and go to state 68
+
+
+State 24
+
+    4 Stmt: declarestmt . NEWLINE
+
+    NEWLINE  shift, and go to state 69
+
+
+State 25
+
+   10 Stmt: expression . NEWLINE
+   26 expression: expression . $@2 LOR llpexpression
+   74 assignmentstmt: expression . $@9 ADD_ASSIGN expression
+   75               | expression . SUB_ASSIGN expression
+   76               | expression . MUL_ASSIGN expression
+   77               | expression . QUO_ASSIGN expression
+   78               | expression . REM_ASSIGN expression
+   80               | expression . $@10 '=' expression
+
+    SUB_ASSIGN  shift, and go to state 70
+    MUL_ASSIGN  shift, and go to state 71
+    QUO_ASSIGN  shift, and go to state 72
+    REM_ASSIGN  shift, and go to state 73
+    NEWLINE     shift, and go to state 74
+
+    ADD_ASSIGN  reduce using rule 73 ($@9)
+    '='         reduce using rule 79 ($@10)
+    $default    reduce using rule 25 ($@2)
+
+    $@2   go to state 75
+    $@9   go to state 76
+    $@10  go to state 77
+
+
+State 26
+
+   30 hpexpression: hpexpression . $@3 '*' hpexpression
+   31             | hpexpression . '/' hpexpression
+   33             | hpexpression . $@4 '%' hpexpression
+   39 mpexpression: hpexpression .
+
+    '/'  shift, and go to state 78
+
+    '*'       reduce using rule 29 ($@3)
+    '%'       reduce using rule 32 ($@4)
+    $default  reduce using rule 39 (mpexpression)
+
+    $@3  go to state 79
+    $@4  go to state 80
+
+
+State 27
+
+   36 mpexpression: mpexpression . $@5 '+' hpexpression
+   38             | mpexpression . $@6 '-' hpexpression
+   46 lpexpression: mpexpression .
+
+    '+'       reduce using rule 35 ($@5)
+    '-'       reduce using rule 37 ($@6)
+    $default  reduce using rule 46 (lpexpression)
+
+    $@5  go to state 81
+    $@6  go to state 82
+
+
+State 28
+
+   40 lpexpression: lpexpression . EQL mpexpression
+   41             | lpexpression . NEQ mpexpression
+   42             | lpexpression . LEQ mpexpression
+   43             | lpexpression . GEQ mpexpression
+   44             | lpexpression . '<' mpexpression
+   45             | lpexpression . '>' mpexpression
+   49 llpexpression: lpexpression .
+
+    EQL  shift, and go to state 83
+    GEQ  shift, and go to state 84
+    LEQ  shift, and go to state 85
+    NEQ  shift, and go to state 86
+    '<'  shift, and go to state 87
+    '>'  shift, and go to state 88
+
+    $default  reduce using rule 49 (llpexpression)
+
+
+State 29
+
+   27 expression: llpexpression .
+   48 llpexpression: llpexpression . $@7 LAND lpexpression
+
+    LAND      reduce using rule 47 ($@7)
+    $default  reduce using rule 27 (expression)
+
+    $@7  go to state 89
+
+
+State 30
+
+   34 hpexpression: unaryExpr .
+
+    $default  reduce using rule 34 (hpexpression)
+
+
+State 31
+
+   51 unaryExpr: unaryOp . unaryExpr
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    unaryExpr    go to state 90
+    unaryOp      go to state 31
+    primaryExpr  go to state 32
+    literal      go to state 33
+    signLiteral  go to state 34
+
+
+State 32
+
+   50 unaryExpr: primaryExpr .
+   59 primaryExpr: primaryExpr . '[' $@8 expression ']'
+
+    '['  shift, and go to state 91
+
+    $default  reduce using rule 50 (unaryExpr)
+
+
+State 33
+
+   55 primaryExpr: literal .
+
+    $default  reduce using rule 55 (primaryExpr)
+
+
+State 34
+
+   62 literal: signLiteral .
+
+    $default  reduce using rule 62 (literal)
+
+
+State 35
+
+    9 Stmt: assignmentstmt . NEWLINE
+
+    NEWLINE  shift, and go to state 92
+
+
+State 36
+
+    5 Stmt: blockstmt . NEWLINE
+
+    NEWLINE  shift, and go to state 93
+
+
+State 37
+
+    6 Stmt: ifstmt . NEWLINE
+
+    NEWLINE  shift, and go to state 94
+
+
+State 38
+
+    7 Stmt: forstmt . NEWLINE
+
+    NEWLINE  shift, and go to state 95
+
+
+State 39
+
+    8 Stmt: printstmt . NEWLINE
+
+    NEWLINE  shift, and go to state 96
+
+
+State 40
+
+   15 declarestmt: VAR ID . DCLTYPE EXTENBDASSIGNMENT
+
+    INT     shift, and go to state 97
+    FLOAT   shift, and go to state 98
+    BOOL    shift, and go to state 99
+    STRING  shift, and go to state 100
+    '['     shift, and go to state 101
+
+    DCLTYPE  go to state 102
+
+
+State 41
+
+   60 primaryExpr: INT '(' . llpexpression ')'
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 103
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 42
+
+   61 primaryExpr: FLOAT '(' . llpexpression ')'
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 104
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 43
+
+   95 initstmt: indecstmt .
+
+    $default  reduce using rule 95 (initstmt)
+
+
+State 44
+
+   26 expression: expression . $@2 LOR llpexpression
+   74 assignmentstmt: expression . $@9 ADD_ASSIGN expression
+   75               | expression . SUB_ASSIGN expression
+   76               | expression . MUL_ASSIGN expression
+   77               | expression . QUO_ASSIGN expression
+   78               | expression . REM_ASSIGN expression
+   80               | expression . $@10 '=' expression
+   85 condition: expression .
+   94 initstmt: expression .
+
+    SUB_ASSIGN  shift, and go to state 70
+    MUL_ASSIGN  shift, and go to state 71
+    QUO_ASSIGN  shift, and go to state 72
+    REM_ASSIGN  shift, and go to state 73
+
+    ADD_ASSIGN  reduce using rule 73 ($@9)
+    '='         reduce using rule 79 ($@10)
+    '{'         reduce using rule 85 (condition)
+    ';'         reduce using rule 94 (initstmt)
+    $default    reduce using rule 25 ($@2)
+
+    $@2   go to state 75
+    $@9   go to state 76
+    $@10  go to state 77
+
+
+State 45
+
+   93 initstmt: assignmentstmt .
+
+    $default  reduce using rule 93 (initstmt)
+
+
+State 46
+
+   90 forstmt: FOR condition . $@13 blockstmt
+
+    $default  reduce using rule 89 ($@13)
+
+    $@13  go to state 105
+
+
+State 47
+
+   91 forstmt: FOR forclause . blockstmt
+
+    '{'  shift, and go to state 20
+
+    blockstmt  go to state 106
+
+
+State 48
+
+   92 forclause: initstmt . ';' condition ';' poststmt
+
+    ';'  shift, and go to state 107
+
+
+State 49
+
+   56 primaryExpr: ID .
+
+    $default  reduce using rule 56 (primaryExpr)
+
+
+State 50
+
+   26 expression: expression . $@2 LOR llpexpression
+   85 condition: expression .
+
+    LOR       reduce using rule 25 ($@2)
+    $default  reduce using rule 85 (condition)
+
+    $@2  go to state 75
+
+
+State 51
+
+   84 ifstmt: IF condition . $@12 blockstmt elsestmt
+
+    $default  reduce using rule 83 ($@12)
+
+    $@12  go to state 108
+
+
+State 52
+
+  100 printstmt: PRINT $@14 . expression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 109
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 53
+
+  102 printstmt: PRINTLN $@15 . expression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 110
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 54
+
+   13 indecstmt: ID INC .
+
+    $default  reduce using rule 13 (indecstmt)
+
+
+State 55
+
+   14 indecstmt: ID DEC .
+
+    $default  reduce using rule 14 (indecstmt)
+
+
+State 56
+
+   28 expression: '"' STRING_LIT . '"'
+   66 literal: '"' STRING_LIT . '"'
+
+    '"'  shift, and go to state 111
+
+
+State 57
+
+   69 signLiteral: '+' INT_LIT .
+
+    $default  reduce using rule 69 (signLiteral)
+
+
+State 58
+
+   71 signLiteral: '+' FLOAT_LIT .
+
+    $default  reduce using rule 71 (signLiteral)
+
+
+State 59
+
+   70 signLiteral: '-' INT_LIT .
+
+    $default  reduce using rule 70 (signLiteral)
+
+
+State 60
+
+   72 signLiteral: '-' FLOAT_LIT .
+
+    $default  reduce using rule 72 (signLiteral)
+
+
+State 61
+
+   66 literal: '"' . STRING_LIT '"'
+
+    STRING_LIT  shift, and go to state 112
+
+
+State 62
+
+   52 unaryExpr: '!' unaryExpr .
+
+    $default  reduce using rule 52 (unaryExpr)
+
+
+State 63
+
+   26 expression: expression . $@2 LOR llpexpression
+   57 primaryExpr: '(' expression . ')'
+
+    ')'  shift, and go to state 113
+
+    $default  reduce using rule 25 ($@2)
+
+    $@2  go to state 75
+
+
+State 64
+
+   82 blockstmt: '{' NEWLINE . $@11 Stmts '}'
+
+    $default  reduce using rule 81 ($@11)
+
+    $@11  go to state 114
+
+
+State 65
+
+    0 $accept: Program $end .
+
+    $default  accept
+
+
+State 66
+
+    1 Program: Stmt Stmts .
+
+    $default  reduce using rule 1 (Program)
+
+
+State 67
+
+    2 Stmts: Stmt . Stmts
+
+    VAR        shift, and go to state 1
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    FOR        shift, and go to state 4
+    IF         shift, and go to state 5
+    PRINT      shift, and go to state 6
+    PRINTLN    shift, and go to state 7
+    NEWLINE    shift, and go to state 8
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 14
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+    '{'        shift, and go to state 20
+
+    $default  reduce using rule 3 (Stmts)
+
+    Stmts           go to state 115
+    Stmt            go to state 67
+    indecstmt       go to state 23
+    declarestmt     go to state 24
+    expression      go to state 25
+    hpexpression    go to state 26
+    mpexpression    go to state 27
+    lpexpression    go to state 28
+    llpexpression   go to state 29
+    unaryExpr       go to state 30
+    unaryOp         go to state 31
+    primaryExpr     go to state 32
+    literal         go to state 33
+    signLiteral     go to state 34
+    assignmentstmt  go to state 35
+    blockstmt       go to state 36
+    ifstmt          go to state 37
+    forstmt         go to state 38
+    printstmt       go to state 39
+
+
+State 68
+
+   11 Stmt: indecstmt NEWLINE .
+
+    $default  reduce using rule 11 (Stmt)
+
+
+State 69
+
+    4 Stmt: declarestmt NEWLINE .
+
+    $default  reduce using rule 4 (Stmt)
+
+
+State 70
+
+   75 assignmentstmt: expression SUB_ASSIGN . expression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 116
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 71
+
+   76 assignmentstmt: expression MUL_ASSIGN . expression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 117
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 72
+
+   77 assignmentstmt: expression QUO_ASSIGN . expression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 118
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 73
+
+   78 assignmentstmt: expression REM_ASSIGN . expression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 119
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 74
+
+   10 Stmt: expression NEWLINE .
+
+    $default  reduce using rule 10 (Stmt)
+
+
+State 75
+
+   26 expression: expression $@2 . LOR llpexpression
+
+    LOR  shift, and go to state 120
+
+
+State 76
+
+   74 assignmentstmt: expression $@9 . ADD_ASSIGN expression
+
+    ADD_ASSIGN  shift, and go to state 121
+
+
+State 77
+
+   80 assignmentstmt: expression $@10 . '=' expression
+
+    '='  shift, and go to state 122
+
+
+State 78
+
+   31 hpexpression: hpexpression '/' . hpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 123
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 79
+
+   30 hpexpression: hpexpression $@3 . '*' hpexpression
+
+    '*'  shift, and go to state 124
+
+
+State 80
+
+   33 hpexpression: hpexpression $@4 . '%' hpexpression
+
+    '%'  shift, and go to state 125
+
+
+State 81
+
+   36 mpexpression: mpexpression $@5 . '+' hpexpression
+
+    '+'  shift, and go to state 126
+
+
+State 82
+
+   38 mpexpression: mpexpression $@6 . '-' hpexpression
+
+    '-'  shift, and go to state 127
+
+
+State 83
+
+   40 lpexpression: lpexpression EQL . mpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 26
+    mpexpression  go to state 128
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 84
+
+   43 lpexpression: lpexpression GEQ . mpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 26
+    mpexpression  go to state 129
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 85
+
+   42 lpexpression: lpexpression LEQ . mpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 26
+    mpexpression  go to state 130
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 86
+
+   41 lpexpression: lpexpression NEQ . mpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 26
+    mpexpression  go to state 131
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 87
+
+   44 lpexpression: lpexpression '<' . mpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 26
+    mpexpression  go to state 132
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 88
+
+   45 lpexpression: lpexpression '>' . mpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 26
+    mpexpression  go to state 133
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 89
+
+   48 llpexpression: llpexpression $@7 . LAND lpexpression
+
+    LAND  shift, and go to state 134
+
+
+State 90
+
+   51 unaryExpr: unaryOp unaryExpr .
+
+    $default  reduce using rule 51 (unaryExpr)
+
+
+State 91
+
+   59 primaryExpr: primaryExpr '[' . $@8 expression ']'
+
+    $default  reduce using rule 58 ($@8)
+
+    $@8  go to state 135
+
+
+State 92
+
+    9 Stmt: assignmentstmt NEWLINE .
+
+    $default  reduce using rule 9 (Stmt)
+
+
+State 93
+
+    5 Stmt: blockstmt NEWLINE .
+
+    $default  reduce using rule 5 (Stmt)
+
+
+State 94
+
+    6 Stmt: ifstmt NEWLINE .
+
+    $default  reduce using rule 6 (Stmt)
+
+
+State 95
+
+    7 Stmt: forstmt NEWLINE .
+
+    $default  reduce using rule 7 (Stmt)
+
+
+State 96
+
+    8 Stmt: printstmt NEWLINE .
+
+    $default  reduce using rule 8 (Stmt)
+
+
+State 97
+
+   16 DCLTYPE: INT .
+
+    $default  reduce using rule 16 (DCLTYPE)
+
+
+State 98
+
+   17 DCLTYPE: FLOAT .
+
+    $default  reduce using rule 17 (DCLTYPE)
+
+
+State 99
+
+   19 DCLTYPE: BOOL .
+
+    $default  reduce using rule 19 (DCLTYPE)
+
+
+State 100
+
+   18 DCLTYPE: STRING .
+
+    $default  reduce using rule 18 (DCLTYPE)
+
+
+State 101
+
+   21 DCLTYPE: '[' . INT_LIT $@1 ']' DCLTYPE
+
+    INT_LIT  shift, and go to state 136
+
+
+State 102
+
+   15 declarestmt: VAR ID DCLTYPE . EXTENBDASSIGNMENT
+
+    '='  shift, and go to state 137
+
+    $default  reduce using rule 24 (EXTENBDASSIGNMENT)
+
+    EXTENBDASSIGNMENT  go to state 138
+
+
+State 103
+
+   48 llpexpression: llpexpression . $@7 LAND lpexpression
+   60 primaryExpr: INT '(' llpexpression . ')'
+
+    ')'  shift, and go to state 139
+
+    $default  reduce using rule 47 ($@7)
+
+    $@7  go to state 89
+
+
+State 104
+
+   48 llpexpression: llpexpression . $@7 LAND lpexpression
+   61 primaryExpr: FLOAT '(' llpexpression . ')'
+
+    ')'  shift, and go to state 140
+
+    $default  reduce using rule 47 ($@7)
+
+    $@7  go to state 89
+
+
+State 105
+
+   90 forstmt: FOR condition $@13 . blockstmt
+
+    '{'  shift, and go to state 20
+
+    blockstmt  go to state 141
+
+
+State 106
+
+   91 forstmt: FOR forclause blockstmt .
+
+    $default  reduce using rule 91 (forstmt)
+
+
+State 107
+
+   92 forclause: initstmt ';' . condition ';' poststmt
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 50
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+    condition      go to state 142
+
+
+State 108
+
+   84 ifstmt: IF condition $@12 . blockstmt elsestmt
+
+    '{'  shift, and go to state 20
+
+    blockstmt  go to state 143
+
+
+State 109
+
+   26 expression: expression . $@2 LOR llpexpression
+  100 printstmt: PRINT $@14 expression .
+
+    NEWLINE   reduce using rule 100 (printstmt)
+    $default  reduce using rule 25 ($@2)
+
+    $@2  go to state 75
+
+
+State 110
+
+   26 expression: expression . $@2 LOR llpexpression
+  102 printstmt: PRINTLN $@15 expression .
+
+    NEWLINE   reduce using rule 102 (printstmt)
+    $default  reduce using rule 25 ($@2)
+
+    $@2  go to state 75
+
+
+State 111
+
+   28 expression: '"' STRING_LIT '"' .
+   66 literal: '"' STRING_LIT '"' .
+
+    ADD_ASSIGN  reduce using rule 28 (expression)
+    ADD_ASSIGN  [reduce using rule 66 (literal)]
+    SUB_ASSIGN  reduce using rule 28 (expression)
+    SUB_ASSIGN  [reduce using rule 66 (literal)]
+    MUL_ASSIGN  reduce using rule 28 (expression)
+    MUL_ASSIGN  [reduce using rule 66 (literal)]
+    QUO_ASSIGN  reduce using rule 28 (expression)
+    QUO_ASSIGN  [reduce using rule 66 (literal)]
+    REM_ASSIGN  reduce using rule 28 (expression)
+    REM_ASSIGN  [reduce using rule 66 (literal)]
+    LOR         reduce using rule 28 (expression)
+    LOR         [reduce using rule 66 (literal)]
+    NEWLINE     reduce using rule 28 (expression)
+    NEWLINE     [reduce using rule 66 (literal)]
+    ']'         reduce using rule 28 (expression)
+    ']'         [reduce using rule 66 (literal)]
+    '='         reduce using rule 28 (expression)
+    '='         [reduce using rule 66 (literal)]
+    ')'         reduce using rule 28 (expression)
+    ')'         [reduce using rule 66 (literal)]
+    '{'         reduce using rule 28 (expression)
+    '{'         [reduce using rule 66 (literal)]
+    ';'         reduce using rule 28 (expression)
+    ';'         [reduce using rule 66 (literal)]
+    $default    reduce using rule 66 (literal)
+
+
+State 112
+
+   66 literal: '"' STRING_LIT . '"'
+
+    '"'  shift, and go to state 144
+
+
+State 113
+
+   57 primaryExpr: '(' expression ')' .
+
+    $default  reduce using rule 57 (primaryExpr)
+
+
+State 114
+
+   82 blockstmt: '{' NEWLINE $@11 . Stmts '}'
+
+    VAR        shift, and go to state 1
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    FOR        shift, and go to state 4
+    IF         shift, and go to state 5
+    PRINT      shift, and go to state 6
+    PRINTLN    shift, and go to state 7
+    NEWLINE    shift, and go to state 8
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 14
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+    '{'        shift, and go to state 20
+
+    $default  reduce using rule 3 (Stmts)
+
+    Stmts           go to state 145
+    Stmt            go to state 67
+    indecstmt       go to state 23
+    declarestmt     go to state 24
+    expression      go to state 25
+    hpexpression    go to state 26
+    mpexpression    go to state 27
+    lpexpression    go to state 28
+    llpexpression   go to state 29
+    unaryExpr       go to state 30
+    unaryOp         go to state 31
+    primaryExpr     go to state 32
+    literal         go to state 33
+    signLiteral     go to state 34
+    assignmentstmt  go to state 35
+    blockstmt       go to state 36
+    ifstmt          go to state 37
+    forstmt         go to state 38
+    printstmt       go to state 39
+
+
+State 115
+
+    2 Stmts: Stmt Stmts .
+
+    $default  reduce using rule 2 (Stmts)
+
+
+State 116
+
+   26 expression: expression . $@2 LOR llpexpression
+   75 assignmentstmt: expression SUB_ASSIGN expression .
+
+    LOR       reduce using rule 25 ($@2)
+    $default  reduce using rule 75 (assignmentstmt)
+
+    $@2  go to state 75
+
+
+State 117
+
+   26 expression: expression . $@2 LOR llpexpression
+   76 assignmentstmt: expression MUL_ASSIGN expression .
+
+    LOR       reduce using rule 25 ($@2)
+    $default  reduce using rule 76 (assignmentstmt)
+
+    $@2  go to state 75
+
+
+State 118
+
+   26 expression: expression . $@2 LOR llpexpression
+   77 assignmentstmt: expression QUO_ASSIGN expression .
+
+    LOR       reduce using rule 25 ($@2)
+    $default  reduce using rule 77 (assignmentstmt)
+
+    $@2  go to state 75
+
+
+State 119
+
+   26 expression: expression . $@2 LOR llpexpression
+   78 assignmentstmt: expression REM_ASSIGN expression .
+
+    LOR       reduce using rule 25 ($@2)
+    $default  reduce using rule 78 (assignmentstmt)
+
+    $@2  go to state 75
+
+
+State 120
+
+   26 expression: expression $@2 LOR . llpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 146
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 121
+
+   74 assignmentstmt: expression $@9 ADD_ASSIGN . expression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 147
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 122
+
+   80 assignmentstmt: expression $@10 '=' . expression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 148
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 123
+
+   30 hpexpression: hpexpression . $@3 '*' hpexpression
+   31             | hpexpression . '/' hpexpression
+   31             | hpexpression '/' hpexpression .
+   33             | hpexpression . $@4 '%' hpexpression
+
+    '/'  shift, and go to state 78
+
+    '*'       reduce using rule 29 ($@3)
+    '*'       [reduce using rule 31 (hpexpression)]
+    '/'       [reduce using rule 31 (hpexpression)]
+    '%'       reduce using rule 31 (hpexpression)
+    '%'       [reduce using rule 32 ($@4)]
+    $default  reduce using rule 31 (hpexpression)
+
+    $@3  go to state 79
+    $@4  go to state 80
+
+
+State 124
+
+   30 hpexpression: hpexpression $@3 '*' . hpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 149
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 125
+
+   33 hpexpression: hpexpression $@4 '%' . hpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 150
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 126
+
+   36 mpexpression: mpexpression $@5 '+' . hpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 151
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 127
+
+   38 mpexpression: mpexpression $@6 '-' . hpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 152
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 128
+
+   36 mpexpression: mpexpression . $@5 '+' hpexpression
+   38             | mpexpression . $@6 '-' hpexpression
+   40 lpexpression: lpexpression EQL mpexpression .
+
+    '+'       reduce using rule 35 ($@5)
+    '-'       reduce using rule 37 ($@6)
+    $default  reduce using rule 40 (lpexpression)
+
+    $@5  go to state 81
+    $@6  go to state 82
+
+
+State 129
+
+   36 mpexpression: mpexpression . $@5 '+' hpexpression
+   38             | mpexpression . $@6 '-' hpexpression
+   43 lpexpression: lpexpression GEQ mpexpression .
+
+    '+'       reduce using rule 35 ($@5)
+    '-'       reduce using rule 37 ($@6)
+    $default  reduce using rule 43 (lpexpression)
+
+    $@5  go to state 81
+    $@6  go to state 82
+
+
+State 130
+
+   36 mpexpression: mpexpression . $@5 '+' hpexpression
+   38             | mpexpression . $@6 '-' hpexpression
+   42 lpexpression: lpexpression LEQ mpexpression .
+
+    '+'       reduce using rule 35 ($@5)
+    '-'       reduce using rule 37 ($@6)
+    $default  reduce using rule 42 (lpexpression)
+
+    $@5  go to state 81
+    $@6  go to state 82
+
+
+State 131
+
+   36 mpexpression: mpexpression . $@5 '+' hpexpression
+   38             | mpexpression . $@6 '-' hpexpression
+   41 lpexpression: lpexpression NEQ mpexpression .
+
+    '+'       reduce using rule 35 ($@5)
+    '-'       reduce using rule 37 ($@6)
+    $default  reduce using rule 41 (lpexpression)
+
+    $@5  go to state 81
+    $@6  go to state 82
+
+
+State 132
+
+   36 mpexpression: mpexpression . $@5 '+' hpexpression
+   38             | mpexpression . $@6 '-' hpexpression
+   44 lpexpression: lpexpression '<' mpexpression .
+
+    '+'       reduce using rule 35 ($@5)
+    '-'       reduce using rule 37 ($@6)
+    $default  reduce using rule 44 (lpexpression)
+
+    $@5  go to state 81
+    $@6  go to state 82
+
+
+State 133
+
+   36 mpexpression: mpexpression . $@5 '+' hpexpression
+   38             | mpexpression . $@6 '-' hpexpression
+   45 lpexpression: lpexpression '>' mpexpression .
+
+    '+'       reduce using rule 35 ($@5)
+    '-'       reduce using rule 37 ($@6)
+    $default  reduce using rule 45 (lpexpression)
+
+    $@5  go to state 81
+    $@6  go to state 82
+
+
+State 134
+
+   48 llpexpression: llpexpression $@7 LAND . lpexpression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 61
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    hpexpression  go to state 26
+    mpexpression  go to state 27
+    lpexpression  go to state 153
+    unaryExpr     go to state 30
+    unaryOp       go to state 31
+    primaryExpr   go to state 32
+    literal       go to state 33
+    signLiteral   go to state 34
+
+
+State 135
+
+   59 primaryExpr: primaryExpr '[' $@8 . expression ']'
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 49
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 154
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 136
+
+   21 DCLTYPE: '[' INT_LIT . $@1 ']' DCLTYPE
+
+    $default  reduce using rule 20 ($@1)
+
+    $@1  go to state 155
+
+
+State 137
+
+   22 EXTENBDASSIGNMENT: '=' . ID
+   23                  | '=' . expression
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 156
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    expression     go to state 157
+    hpexpression   go to state 26
+    mpexpression   go to state 27
+    lpexpression   go to state 28
+    llpexpression  go to state 29
+    unaryExpr      go to state 30
+    unaryOp        go to state 31
+    primaryExpr    go to state 32
+    literal        go to state 33
+    signLiteral    go to state 34
+
+
+State 138
+
+   15 declarestmt: VAR ID DCLTYPE EXTENBDASSIGNMENT .
+
+    $default  reduce using rule 15 (declarestmt)
+
+
+State 139
+
+   60 primaryExpr: INT '(' llpexpression ')' .
+
+    $default  reduce using rule 60 (primaryExpr)
+
+
+State 140
+
+   61 primaryExpr: FLOAT '(' llpexpression ')' .
+
+    $default  reduce using rule 61 (primaryExpr)
+
+
+State 141
+
+   90 forstmt: FOR condition $@13 blockstmt .
+
+    $default  reduce using rule 90 (forstmt)
+
+
+State 142
+
+   92 forclause: initstmt ';' condition . ';' poststmt
+
+    ';'  shift, and go to state 158
+
+
+State 143
+
+   84 ifstmt: IF condition $@12 blockstmt . elsestmt
+
+    ELSE  shift, and go to state 159
+
+    $default  reduce using rule 88 (elsestmt)
+
+    elsestmt  go to state 160
+
+
+State 144
+
+   66 literal: '"' STRING_LIT '"' .
+
+    $default  reduce using rule 66 (literal)
+
+
+State 145
+
+   82 blockstmt: '{' NEWLINE $@11 Stmts . '}'
+
+    '}'  shift, and go to state 161
+
+
+State 146
+
+   26 expression: expression $@2 LOR llpexpression .
+   48 llpexpression: llpexpression . $@7 LAND lpexpression
+
+    LAND      reduce using rule 47 ($@7)
+    $default  reduce using rule 26 (expression)
+
+    $@7  go to state 89
+
+
+State 147
+
+   26 expression: expression . $@2 LOR llpexpression
+   74 assignmentstmt: expression $@9 ADD_ASSIGN expression .
+
+    LOR       reduce using rule 25 ($@2)
+    $default  reduce using rule 74 (assignmentstmt)
+
+    $@2  go to state 75
+
+
+State 148
+
+   26 expression: expression . $@2 LOR llpexpression
+   80 assignmentstmt: expression $@10 '=' expression .
+
+    LOR       reduce using rule 25 ($@2)
+    $default  reduce using rule 80 (assignmentstmt)
+
+    $@2  go to state 75
+
+
+State 149
+
+   30 hpexpression: hpexpression . $@3 '*' hpexpression
+   30             | hpexpression $@3 '*' hpexpression .
+   31             | hpexpression . '/' hpexpression
+   33             | hpexpression . $@4 '%' hpexpression
+
+    '/'  shift, and go to state 78
+
+    '*'       reduce using rule 29 ($@3)
+    '*'       [reduce using rule 30 (hpexpression)]
+    '/'       [reduce using rule 30 (hpexpression)]
+    '%'       reduce using rule 30 (hpexpression)
+    '%'       [reduce using rule 32 ($@4)]
+    $default  reduce using rule 30 (hpexpression)
+
+    $@3  go to state 79
+    $@4  go to state 80
+
+
+State 150
+
+   30 hpexpression: hpexpression . $@3 '*' hpexpression
+   31             | hpexpression . '/' hpexpression
+   33             | hpexpression . $@4 '%' hpexpression
+   33             | hpexpression $@4 '%' hpexpression .
+
+    '/'  shift, and go to state 78
+
+    '*'       reduce using rule 29 ($@3)
+    '*'       [reduce using rule 33 (hpexpression)]
+    '/'       [reduce using rule 33 (hpexpression)]
+    '%'       reduce using rule 32 ($@4)
+    '%'       [reduce using rule 33 (hpexpression)]
+    $default  reduce using rule 33 (hpexpression)
+
+    $@3  go to state 79
+    $@4  go to state 80
+
+
+State 151
+
+   30 hpexpression: hpexpression . $@3 '*' hpexpression
+   31             | hpexpression . '/' hpexpression
+   33             | hpexpression . $@4 '%' hpexpression
+   36 mpexpression: mpexpression $@5 '+' hpexpression .
+
+    '/'  shift, and go to state 78
+
+    '*'       reduce using rule 29 ($@3)
+    '%'       reduce using rule 32 ($@4)
+    $default  reduce using rule 36 (mpexpression)
+
+    $@3  go to state 79
+    $@4  go to state 80
+
+
+State 152
+
+   30 hpexpression: hpexpression . $@3 '*' hpexpression
+   31             | hpexpression . '/' hpexpression
+   33             | hpexpression . $@4 '%' hpexpression
+   38 mpexpression: mpexpression $@6 '-' hpexpression .
+
+    '/'  shift, and go to state 78
+
+    '*'       reduce using rule 29 ($@3)
+    '%'       reduce using rule 32 ($@4)
+    $default  reduce using rule 38 (mpexpression)
+
+    $@3  go to state 79
+    $@4  go to state 80
+
+
+State 153
+
+   40 lpexpression: lpexpression . EQL mpexpression
+   41             | lpexpression . NEQ mpexpression
+   42             | lpexpression . LEQ mpexpression
+   43             | lpexpression . GEQ mpexpression
+   44             | lpexpression . '<' mpexpression
+   45             | lpexpression . '>' mpexpression
+   48 llpexpression: llpexpression $@7 LAND lpexpression .
+
+    EQL  shift, and go to state 83
+    GEQ  shift, and go to state 84
+    LEQ  shift, and go to state 85
+    NEQ  shift, and go to state 86
+    '<'  shift, and go to state 87
+    '>'  shift, and go to state 88
+
+    $default  reduce using rule 48 (llpexpression)
+
+
+State 154
+
+   26 expression: expression . $@2 LOR llpexpression
+   59 primaryExpr: primaryExpr '[' $@8 expression . ']'
+
+    ']'  shift, and go to state 162
+
+    $default  reduce using rule 25 ($@2)
+
+    $@2  go to state 75
+
+
+State 155
+
+   21 DCLTYPE: '[' INT_LIT $@1 . ']' DCLTYPE
+
+    ']'  shift, and go to state 163
+
+
+State 156
+
+   22 EXTENBDASSIGNMENT: '=' ID .
+   56 primaryExpr: ID .
+
+    NEWLINE   reduce using rule 22 (EXTENBDASSIGNMENT)
+    NEWLINE   [reduce using rule 56 (primaryExpr)]
+    $default  reduce using rule 56 (primaryExpr)
+
+
+State 157
+
+   23 EXTENBDASSIGNMENT: '=' expression .
+   26 expression: expression . $@2 LOR llpexpression
+
+    LOR       reduce using rule 25 ($@2)
+    $default  reduce using rule 23 (EXTENBDASSIGNMENT)
+
+    $@2  go to state 75
+
+
+State 158
+
+   92 forclause: initstmt ';' condition ';' . poststmt
+
+    INT        shift, and go to state 2
+    FLOAT      shift, and go to state 3
+    TRUE       shift, and go to state 9
+    FALSE      shift, and go to state 10
+    INT_LIT    shift, and go to state 11
+    FLOAT_LIT  shift, and go to state 12
+    BOOL_LIT   shift, and go to state 13
+    ID         shift, and go to state 14
+    '"'        shift, and go to state 15
+    '+'        shift, and go to state 16
+    '-'        shift, and go to state 17
+    '!'        shift, and go to state 18
+    '('        shift, and go to state 19
+
+    indecstmt       go to state 164
+    expression      go to state 165
+    hpexpression    go to state 26
+    mpexpression    go to state 27
+    lpexpression    go to state 28
+    llpexpression   go to state 29
+    unaryExpr       go to state 30
+    unaryOp         go to state 31
+    primaryExpr     go to state 32
+    literal         go to state 33
+    signLiteral     go to state 34
+    assignmentstmt  go to state 166
+    poststmt        go to state 167
+
+
+State 159
+
+   86 elsestmt: ELSE . ifstmt
+   87         | ELSE . blockstmt
+
+    IF   shift, and go to state 5
+    '{'  shift, and go to state 20
+
+    blockstmt  go to state 168
+    ifstmt     go to state 169
+
+
+State 160
+
+   84 ifstmt: IF condition $@12 blockstmt elsestmt .
+
+    $default  reduce using rule 84 (ifstmt)
+
+
+State 161
+
+   82 blockstmt: '{' NEWLINE $@11 Stmts '}' .
+
+    $default  reduce using rule 82 (blockstmt)
+
+
+State 162
+
+   59 primaryExpr: primaryExpr '[' $@8 expression ']' .
+
+    $default  reduce using rule 59 (primaryExpr)
+
+
+State 163
+
+   21 DCLTYPE: '[' INT_LIT $@1 ']' . DCLTYPE
+
+    INT     shift, and go to state 97
+    FLOAT   shift, and go to state 98
+    BOOL    shift, and go to state 99
+    STRING  shift, and go to state 100
+    '['     shift, and go to state 101
+
+    DCLTYPE  go to state 170
+
+
+State 164
+
+   98 poststmt: indecstmt .
+
+    $default  reduce using rule 98 (poststmt)
+
+
+State 165
+
+   26 expression: expression . $@2 LOR llpexpression
+   74 assignmentstmt: expression . $@9 ADD_ASSIGN expression
+   75               | expression . SUB_ASSIGN expression
+   76               | expression . MUL_ASSIGN expression
+   77               | expression . QUO_ASSIGN expression
+   78               | expression . REM_ASSIGN expression
+   80               | expression . $@10 '=' expression
+   97 poststmt: expression .
+
+    SUB_ASSIGN  shift, and go to state 70
+    MUL_ASSIGN  shift, and go to state 71
+    QUO_ASSIGN  shift, and go to state 72
+    REM_ASSIGN  shift, and go to state 73
+
+    ADD_ASSIGN  reduce using rule 73 ($@9)
+    '='         reduce using rule 79 ($@10)
+    '{'         reduce using rule 97 (poststmt)
+    $default    reduce using rule 25 ($@2)
+
+    $@2   go to state 75
+    $@9   go to state 76
+    $@10  go to state 77
+
+
+State 166
+
+   96 poststmt: assignmentstmt .
+
+    $default  reduce using rule 96 (poststmt)
+
+
+State 167
+
+   92 forclause: initstmt ';' condition ';' poststmt .
+
+    $default  reduce using rule 92 (forclause)
+
+
+State 168
+
+   87 elsestmt: ELSE blockstmt .
+
+    $default  reduce using rule 87 (elsestmt)
+
+
+State 169
+
+   86 elsestmt: ELSE ifstmt .
+
+    $default  reduce using rule 86 (elsestmt)
+
+
+State 170
+
+   21 DCLTYPE: '[' INT_LIT $@1 ']' DCLTYPE .
+
+    $default  reduce using rule 21 (DCLTYPE)
